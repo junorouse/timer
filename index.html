@@ -11,6 +11,7 @@
 	#Dms::after { content: '' }
 	#Dpercentage::after { content: '%' }
 	#juno { position: absolute; left: 0;}
+	#clear { position: absolute; bottom: 50px; right: 0;}
 	#checkpoint { position: absolute; left: 0; border-left: 2px solid black; height: 88px; left: 30%}
 	#outer {
 	  display: flex;
@@ -26,6 +27,7 @@
 	#progress {
 	  flex-grow : 1;
 	  position: relative;
+	  background: url('./back.png')
 	}
 	.hanggoon {
 	    width: 100%;
@@ -46,6 +48,7 @@
 
     <div id='progress'>
 	<img src='juno.gif' width=60px id='juno'>
+	<img src='clear.png' height=88px id='clear'>
 	<div id='ppp'></div>
     </div>
 </div>
@@ -81,10 +84,19 @@ function drawHangGoonLoad() {
 }
 
 
+var prevMTop
+var yip = 0
 function showRemaining() {
     var now = new Date()
     var distance = end - now
+    
+    if ( (now - start) > yip ) {
+        distance = end - start - yip
+        yip += 30000000
+    }
+
     var total = end - start
+
     var percentage = total / distance * 100 - 100
 
     // calculate top, left
@@ -95,12 +107,15 @@ function showRemaining() {
     juno.style.top = (mTop * 89) + 'px'
     juno.style.left = mLeft + 'px'
 
-    for (var i=0; i<mTop; i++) {
-	ppp.children[i].innerHTML = '<div style="background-color: #EDC9AF; height: 100%; width: 100%">'
-    }
+    if (prevMTop != mTop) {
+		for (var i=0; i<mTop; i++) {
+		ppp.children[i].innerHTML = '<div style="height: 100%; width: 100%">'
+		}
+		prevMTop = mTop
+	}
 
     try {
-	ppp.children[mTop].innerHTML = '<div style="background-color: #EDC9AF; height: 100%; width: ' + mLeft +'px">'
+        ppp.children[mTop].innerHTML = '<div style="background-color: #FFFFFF; height: 100%; width: ' + mLeft +'px">'
      } catch (e) { }
 
     Dpercentage.textContent = percentage
@@ -118,7 +133,9 @@ function showRemaining() {
     Dms.textContent = milliseconds
 }
 
-timer = setInterval(showRemaining, 10);
+if (1) {
+	timer = setInterval(showRemaining, 10);
+}
 
 </script>
 </body>
