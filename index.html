@@ -1,39 +1,40 @@
 <!doctype html>
 <html>
 <head>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v6.0"></script>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-	* { padding: 0; margin: 0; }
-	span { font-size: 3rem; }
-	html, body { width:100%; height: 100%; }
-	#Dseconds::after { content: 's' }
-	#Dms::after { content: '' }
-	#Dpercentage::after { content: '%' }
-	#juno { position: absolute; left: 0;}
-	#clear { position: absolute; bottom: 50px; right: 0;}
-	#checkpoint { position: absolute; left: 0; border-left: 2px solid black; height: 88px; left: 30%}
-	#outer {
-	  display: flex;
-	  flex-flow: column;
-	  height: 100%;
-	}
-	 
-	#timer {
-	  height: 10rem;
-	  background-color: grey;
-	}
-	 
-	#progress {
-	  flex-grow : 1;
-	  position: relative;
-	  background: url('./back.png')
-	}
-	.hanggoon {
-	    width: 100%;
-	    height: 88px;
-	    border-bottom: 2px solid #EDC9AF;
-	}
+    * { padding: 0; margin: 0; }
+    span { font-size: 3rem; }
+    html, body { width:100%; height: 100%; }
+    #Dseconds::after { content: 's' }
+    #Dms::after { content: '' }
+    #Dpercentage::after { content: '%' }
+    #juno { position: absolute; left: 0;}
+    #clear { position: absolute; bottom: 50px; right: 0;}
+    #checkpoint { position: absolute; left: 0; border-left: 2px solid black; height: 88px; left: 30%}
+    #outer {
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+    }
+     
+    #timer {
+      height: 10rem;
+      background-color: grey;
+    }
+     
+    #progress {
+      flex-grow : 1;
+      position: relative;
+      background: url('./back.png')
+    }
+    .hanggoon {
+        width: 100%;
+        height: 88px;
+        border-bottom: 2px solid #EDC9AF;
+    }
 
     .loader {
   width: 60px;
@@ -91,32 +92,94 @@
   justify-content: center;
   margin: 0;
 }
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  overflow-y: scroll;
+  margin-bottom: 100px;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button { padding: 10px; font-size: 17px;}
     </style>
 </head>
 <body>
+<!-- loading ... -->
 <div class="wrap-loader" id='loader'>
 <div class="loader">
   <div class="loader-wheel"></div>
   <div class="loader-text"></div>
 </div>
 </div>
+
+<!-- modal for guest book -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>응원의 덧글을 남겨주세요..</h1>
+    <div id="fb-root"></div>
+    <div class="fb-comments" data-href="https://www.facebook.com/imjuno99/posts/1097040377308086" data-width="100%" data-numposts="20"></div>
+  </div>
+</div>
+
+<!-- content ... -->
 <div id='outer'>
     <div id='timer'>
-	<span id='Dseconds'></span>		    
-	<span id='Dms'></span>		    
-	    <br>
-	<span id='Dpercentage'></span>		    
+    <span id='Dseconds'></span>         
+    <span id='Dms'></span>          
+    <br>
+    <span id='Dpercentage'></span>          
+    <br>
+    <button id="myBtn">[응원의 메시지 쓰기]</button>
+    <button onclick='prompt("복사 붙여넣기 하세요 ㅎㅎ", "58890204069332 국민")'>[후원 하기]</button>
     </div>
 
     <div id='progress'>
-	<img src='juno.gif' width=60px id='juno'>
-	<img src='clear.png' height=88px id='clear'>
-	<div id='ppp'></div>
+    <img src='juno.gif' width=60px id='juno'>
+    <img src='clear.png' height=88px id='clear'>
+    <div id='ppp'></div>
     </div>
 </div>
 <script>
 var start = new Date('04 Feb 2020 00:00:00'); // set expiry date and time..
 var end = new Date('03 Dec 2022 00:00:00'); // set expiry date and time..
+
+// var start = new Date('09 Mar 2020 00:00:00'); // set expiry date and time..
+// var end = new Date('08 Jan 2023 00:00:00'); // set expiry date and time..
 
 var _second = 1000
 var _minute = _second * 60
@@ -131,7 +194,7 @@ function numberWithCommas(x) {
 window.onresize = drawHangGoonLoad
 window.onload = function() {
     loader.style.display = 'none'
-	timer = setInterval(showRemaining, 10)
+    timer = setInterval(showRemaining, 10)
     drawHangGoonLoad()
 }
 
@@ -143,9 +206,9 @@ function drawHangGoonLoad() {
     elemCount = h / (88)
 
     for (var i=0; i<parseInt(elemCount); i++) {
-	x = document.createElement('div')
-	x.className = 'hanggoon'
-	ppp.appendChild(x)
+    x = document.createElement('div')
+    x.className = 'hanggoon'
+    ppp.appendChild(x)
     }
 }
 
@@ -174,17 +237,19 @@ function showRemaining() {
     juno.style.left = mLeft + 'px'
 
     if (prevMTop != mTop) {
-		for (var i=0; i<mTop; i++) {
-		ppp.children[i].innerHTML = '<div style="height: 100%; width: 100%">'
-		}
-		prevMTop = mTop
-	}
+        for (var i=0; i<mTop; i++) {
+            ppp.children[i].innerHTML = '<div style="height: 100%; width: 100%">'
+        }
+        prevMTop = mTop
+    }
 
     try {
+        for (var i=0; i<mTop; i++)
+            ppp.children[i].innerHTML = '<div style="background-color: #FFFFFF; height: 100%; width: 100%;">'
         ppp.children[mTop].innerHTML = '<div style="background-color: #FFFFFF; height: 100%; width: ' + mLeft +'px">'
      } catch (e) { }
 
-    Dpercentage.textContent = percentage
+    Dpercentage.textContent = percentage.toFixed(6)
 
     if (distance < 0 ) {
        clearInterval( timer )
@@ -199,6 +264,21 @@ function showRemaining() {
     Dms.textContent = milliseconds
 }
 
+
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+span.onclick = function() {
+  modal.style.display = "none";
+}
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 
 </script>
 </body>
