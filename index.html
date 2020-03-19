@@ -67,7 +67,10 @@ function numberWithCommas(x) {
 }
 
 window.onresize = drawHangGoonLoad
-window.onload = drawHangGoonLoad
+window.onload = function() {
+	timer = setInterval(showRemaining, 10);
+    drawHangGoonLoad()
+}
 
 function drawHangGoonLoad() {
     ppp.innerHTML = ""
@@ -133,9 +136,6 @@ function showRemaining() {
     Dms.textContent = milliseconds
 }
 
-if (1) {
-	timer = setInterval(showRemaining, 10);
-}
 
 </script>
 </body>
