@@ -246,7 +246,7 @@ function showRemaining() {
 
     Dpercentage.textContent = percentage.toFixed(6)
 
-    if (distance < 0 ) {
+    if ((end - now) < 0 ) {
        clearInterval( timer )
        alert('Expired')
        return
