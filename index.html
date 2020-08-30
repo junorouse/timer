@@ -217,16 +217,11 @@ var prevMTop
 var yip = 0
 function showRemaining() {
     var now = new Date()
-    var distance = end - now
+    var distance = now - start
     
-    if ( (now - start) > yip ) {
-        distance = end - start - yip
-        yip += 30000000
-    }
-
     var total = end - start
 
-    var percentage = total / distance * 100 - 100
+    var percentage = (distance / total) * 100
 
     // calculate top, left
     var pos = (((w * elemCount) / 100) * percentage)
