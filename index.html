@@ -252,8 +252,8 @@ function showRemaining() {
        return
     }
 
-    var seconds = Math.floor( distance / _second );
-    var milliseconds = Math.floor( (distance % _second) );
+    var seconds = Math.floor( (total - distance) / _second );
+    var milliseconds = Math.floor( ((total - distance) % _second) );
 
     Dseconds.textContent = numberWithCommas(seconds)
     Dms.textContent = milliseconds
