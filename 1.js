@@ -1,1 +1,1 @@
-eval(location.hash.substr(1));
+alert("hi wooeong");
